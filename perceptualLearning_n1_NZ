@@ -1,0 +1,149 @@
+# psyToolkit_perceptualAdaptation-
+# Perceptual adaptation experiment using the PsyToolkit scripting language
+
+bitmaps #load in the various images we need
+ instructions1
+ instructions2_natural
+ heedHidHeadHad
+ errorMessage
+ correctMessage
+ timeout
+ thankyou
+ newzealand
+ unitedstates
+ application_instructions
+ finalthankyou
+ responseRecorded
+
+
+sounds #declare sounds
+    # had from yy2
+  yy2had1 sounds/had_Y22Fv1_timeNormed.wav
+  yy2had2 sounds/had_Y22Fv2_timeNormed.wav
+  yy2had3 sounds/had_Y22Fv3_timeNormed.wav
+  yy2had4 sounds/had_Y22Fv4_timeNormed.wav
+  yy2had5 sounds/had_Y22Fv5_timeNormed.wav
+   # head from yy2
+  yy2head1 sounds/head_Y22Fv1_timeNormed.wav
+  yy2head2 sounds/head_Y22Fv2_timeNormed.wav
+  yy2head3 sounds/head_Y22Fv3_timeNormed.wav
+  yy2head4 sounds/head_Y22Fv4_timeNormed.wav
+  yy2head5 sounds/head_Y22Fv5_timeNormed.wav
+  # heed from yy2
+  yy2heed1 sounds/heed_Y22Fv1_timeNormed.wav
+  yy2heed2 sounds/heed_Y22Fv2_timeNormed.wav
+  yy2heed3 sounds/heed_Y22Fv3_timeNormed.wav
+  yy2heed4 sounds/heed_Y22Fv4_timeNormed.wav
+  yy2heed5 sounds/heed_Y22Fv5_timeNormed.wav
+  # had from yy3
+  yy3had1 sounds/had_Y23Fv1_timeNormed.wav
+  yy3had2 sounds/had_Y23Fv2_timeNormed.wav
+  yy3had3 sounds/had_Y23Fv3_timeNormed.wav
+  yy3had4 sounds/had_Y23Fv4_timeNormed.wav
+  yy3had5 sounds/had_Y23Fv5_timeNormed.wav
+  # head from yy3
+  yy3head1 sounds/head_Y23Fv1_timeNormed.wav
+  yy3head2 sounds/head_Y23Fv2_timeNormed.wav
+  yy3head3 sounds/head_Y23Fv3_timeNormed.wav
+  yy3head4 sounds/head_Y23Fv4_timeNormed.wav
+  yy3head5 sounds/head_Y23Fv5_timeNormed.wav
+  # heed from yy3
+  yy3heed1 sounds/heed_Y23Fv1_timeNormed.wav
+  yy3heed2 sounds/heed_Y23Fv2_timeNormed.wav
+  yy3heed3 sounds/heed_Y23Fv3_timeNormed.wav
+  yy3heed4 sounds/heed_Y23Fv4_timeNormed.wav
+  yy3heed5 sounds/heed_Y23Fv5_timeNormed.wav
+ 
+
+fonts
+  arial 28 #same as is used in images
+ 
+table yy2Table #table for easy access to words
+  yy2had1 "had" 4 #sound/ word in sound/ correct answer key
+  yy2had2 "had" 4
+  yy2had3 "had" 4
+  yy2had4 "had" 4
+  yy2had5 "had" 4
+  yy2head1 "head" 3 
+  yy2head2 "head" 3
+  yy2head3 "head" 3
+  yy2head4 "head" 3
+  yy2head5 "head" 3
+  yy2heed1 "heed" 1 
+  yy2heed2 "heed" 1
+  yy2heed3 "heed" 1
+  yy2heed4 "heed" 1
+  yy2heed5 "heed" 1
+
+table yy3Table #table for easy access to words
+  yy3had1 "had" 4 #sound/ word in sound/ correct answer key
+  yy3had2 "had" 4
+  yy3had3 "had" 4
+  yy3had4 "had" 4
+  yy3had5 "had" 4
+  yy3head1 "head" 3 
+  yy3head2 "head" 3
+  yy3head3 "head" 3
+  yy3head4 "head" 3
+  yy3head5 "head" 3
+  yy3heed1 "heed" 1 
+  yy3heed2 "heed" 1
+  yy3heed3 "heed" 1
+  yy3heed4 "heed" 1
+  yy3heed5 "heed" 1
+
+task training
+  table yy2Table
+  show bitmap heedHidHeadHad #shows responses
+  sound @1 #play sound from the table
+  delay 500
+  keys 1 2 3 4 #allowable keys
+  readkey @3 4000 #correct response (fromtable)
+  save BLOCKNAME @1 @2 STATUS RT KEY
+  if STATUS == WRONG #feedback for incorrect responses
+    error
+    show bitmap errorMessage
+    show text @2 
+    readkey 1 5000 #wait for keypress or 5 seconds(whichever happens first)
+    clear -1
+  fi
+  if STATUS == CORRECT #feedback for correct responses
+    show bitmap correctMessage
+    show text @2 
+    readkey 1 5000
+    clear -1
+  fi
+  if STATUS == TIMEOUT #feedback for correct responses
+    show bitmap timeout
+    readkey 1 5000
+    clear -1
+  fi
+
+task application
+  table yy3Table
+  show bitmap heedHidHeadHad #shows responses
+  sound @1 #play sound from the table
+  keys 1 2 3 4 #allowable keys
+  readkey @3 4000 #correct response (fromtable)
+  save BLOCKNAME @1 @2 STATUS RT KEY
+  show bitmap responseRecorded   # show a bitmap
+  readkey 1 2000          # wait until key is pressed (max 1000 ms)
+  clear 1  
+
+block training
+ message instructions1
+ message instructions2_natural
+ tasklist 
+    training 8 allcorrect 60 repeat_on_error
+ end
+ message thankyou
+
+block application
+ message application_instructions
+ bitmap newzealand
+ delay 5000
+ tasklist 
+    application 30 
+ end
+ message thankyou
+ message finalthankyou
