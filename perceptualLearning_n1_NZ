@@ -1,6 +1,3 @@
-# psyToolkit_perceptualAdaptation-
-# Perceptual adaptation experiment using the PsyToolkit scripting language
-
 bitmaps #load in the various images we need
  instructions1
  instructions2_natural
@@ -58,6 +55,7 @@ sounds #declare sounds
 fonts
   arial 28 #same as is used in images
  
+
 table yy2Table #table for easy access to words
   yy2had1 "had" 4 #sound/ word in sound/ correct answer key
   yy2had2 "had" 4
@@ -104,7 +102,7 @@ task training
     error
     show bitmap errorMessage
     show text @2 
-    readkey 1 5000 #wait for keypress or 5 seconds(whichever happens first)
+    readkey 1 5000
     clear -1
   fi
   if STATUS == CORRECT #feedback for correct responses
@@ -126,9 +124,22 @@ task application
   keys 1 2 3 4 #allowable keys
   readkey @3 4000 #correct response (fromtable)
   save BLOCKNAME @1 @2 STATUS RT KEY
-  show bitmap responseRecorded   # show a bitmap
-  readkey 1 2000          # wait until key is pressed (max 1000 ms)
-  clear 1  
+  if STATUS == WRONG #feedback for correct responses
+    error
+    show bitmap responseRecorded   # show a bitmap
+    readkey 1 5000          # wait until key is pressed (max 4000 ms)
+    clear -1
+  fi  
+  if STATUS == CORRECT #feedback for correct responses
+    show bitmap responseRecorded   # show a bitmap
+    readkey 1 5000          # wait until key is pressed (max 4000 ms)
+    clear -1
+  fi  
+  if STATUS == TIMEOUT #feedback for correct responses
+    show bitmap timeout
+    readkey 1 5000
+    clear -1
+  fi    
 
 block training
  message instructions1
